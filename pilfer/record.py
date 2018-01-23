@@ -52,7 +52,7 @@ def ffmpeg(**kwargs):
         options = values[1:-2]
         remove_bracket = str(options)[1:-1]
         options_join = ''.join(remove_bracket).replace('"', '')
-        ffcmd = "{0} -hide_banner -stats -v panic {2} -i {1} -c:v copy -c:a copy {3} {4} {5}".format(ffmpeg, url, options_join, tflag, duration, recordingfile)
+        ffcmd = "{0} -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 300 -hide_banner -stats -v panic {2} -i {1} -c:v copy -c:a copy {3} {4} {5}".format(ffmpeg, url, options_join, tflag, duration, recordingfile)
 
     # split the ffmpeg command for subprocess
     ffsplit = shlex.split(ffcmd)
@@ -106,7 +106,7 @@ def rtmp(**kwargs):
     if 'duration' in kwargs:
         tflag = kwargs['tflag']
         duration = kwargs['duration']
-        rtmpcmd = "{0} -q -i '{1}' | {2} -hide_banner -stats -v panic -i - -c:v copy -c:a copy {3} {4} {5}".format(rtmpdump, url, ffmpeg, tflag, duration, recordingfile)
+        rtmpcmd = "{0} -q -i '{1}' | {2} -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 300 -hide_banner -stats -v panic -i - -c:v copy -c:a copy {3} {4} {5}".format(rtmpdump, url, ffmpeg, tflag, duration, recordingfile)
 
     print("running rtmp command:")
  
@@ -117,3 +117,4 @@ def rtmp(**kwargs):
         print("recording stopped by user")
     except IOError:
         print("input outpur error, is rtmpdump or ffmpeg installed")
+
